@@ -12,18 +12,15 @@ contract MetisApeWives is ERC721A, Ownable {
     uint256 public constant MAX_SUPPLY = 10000;
     uint256 public constant MAX_PUBLIC_MINT = 10;
     uint256 public constant MAX_WHITELIST_MINT = 15;
-    uint256 public constant PUBLIC_SALE_PRICE = .00000001 ether;
-    uint256 public constant WHITELIST_SALE_PRICE = .000000005 ether;
+    uint256 public constant PUBLIC_SALE_PRICE = .15 ether;
+    uint256 public constant WHITELIST_SALE_PRICE = .1 ether;
 
     string private baseTokenUri;
-    string public placeholderTokenUri;
 
     //deploy smart contract, toggle WL, toggle WL when done, toggle publicSale
     //2 days later toggle reveal
-    bool public isRevealed;
     bool public publicSale;
     bool public whiteListSale;
-    bool public pause;
     bool public teamMinted;
 
     bytes32 private merkleRoot;
@@ -109,7 +106,7 @@ contract MetisApeWives is ERC721A, Ownable {
     function teamMint() external onlyOwner {
         require(!teamMinted, "Metis ApeWives :: Team minted");
         teamMinted = true;
-        _safeMint(msg.sender, 200);
+        _safeMint(msg.sender, 500);
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
@@ -135,10 +132,6 @@ contract MetisApeWives is ERC721A, Ownable {
 
         uint256 trueId = tokenId + 1;
 
-        if (!isRevealed) {
-            return placeholderTokenUri;
-        }
-        //string memory baseURI = _baseURI();
         return
             bytes(baseTokenUri).length > 0
                 ? string(
@@ -148,27 +141,20 @@ contract MetisApeWives is ERC721A, Ownable {
     }
 
     /// @dev walletOf() function shouldn't be called on-chain due to gas consumption
-    // function walletOf() external view returns (uint256[] memory) {
-    //     address _owner = msg.sender;
-    //     uint256 numberOfOwnedNFT = balanceOf(_owner);
-    //     uint256[] memory ownerIds = new uint256[](numberOfOwnedNFT);
+    function walletOf() external view returns (uint256[] memory) {
+        address _owner = msg.sender;
+        uint256 numberOfOwnedNFT = balanceOf(_owner);
+        uint256[] memory ownerIds = new uint256[](numberOfOwnedNFT);
 
-    //     for (uint256 index = 0; index < numberOfOwnedNFT; index++) {
-    //         ownerIds[index] = tokenOfOwnerByIndex(_owner, index);
-    //     }
+        for (uint256 index = 0; index < numberOfOwnedNFT; index++) {
+            ownerIds[index] = tokenOfOwnerByIndex(_owner, index);
+        }
 
-    //     return ownerIds;
-    // }
+        return ownerIds;
+    }
 
     function setTokenUri(string memory _baseTokenUri) external onlyOwner {
         baseTokenUri = _baseTokenUri;
-    }
-
-    function setPlaceHolderUri(string memory _placeholderTokenUri)
-        external
-        onlyOwner
-    {
-        placeholderTokenUri = _placeholderTokenUri;
     }
 
     function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
@@ -179,20 +165,12 @@ contract MetisApeWives is ERC721A, Ownable {
         return merkleRoot;
     }
 
-    function togglePause() external onlyOwner {
-        pause = !pause;
-    }
-
     function toggleWhiteListSale() external onlyOwner {
         whiteListSale = !whiteListSale;
     }
 
     function togglePublicSale() external onlyOwner {
         publicSale = !publicSale;
-    }
-
-    function toggleReveal() external onlyOwner {
-        isRevealed = !isRevealed;
     }
 
     function getContractBalance()
@@ -236,4 +214,18 @@ contract MetisApeWives is ERC721A, Ownable {
 //   "0xa0709c8a55e4fe670a4b04f393048228407f955fe266d24f3e0aa3d7fc168f34",
 //   "0xef3051ae08c903dd3f36942ed87953b041205cceda40c941bb836b05160e8055",
 //   "0x9f86faf559e131c380ec94d385ac2860b840905354301523d446b39ebb830269"
+// ]
+
+// [
+//   "0x2879e45ed4563368cf0b30fb6e6b24df6470ba85d1ceff695541e38a1573e981",
+//   "0x7f91e9f0a94da5335f769acd86c496cd9004bc0104b9161a3c6c87f3a57caf40",
+//   "0xab070f729ed4905e4e45b74812777a8d0a80a250c257d3b60a52c34b6ed9dca1",
+//   "0xe9c551f0135f6623b31436072a5c21d9c30550c5ce606c66c67930988f10b309",
+//   "0x416b2c97c92ac82caa2b983b7d138d8fcbb0cecd5d483001617e0f57f6bdfe4e",
+//   "0xd7ea2d5fe34e9120c6c83612bf0596c58d3423d26d584a499268337ae765ac64",
+//   "0x0b216cdc7febacfe44985c4d6102aa4e67341c8c50c715ab920229ebdedc21b6",
+//   "0xd7acc32df28b11b6c36c6bab4c59ece10da794ca27994b11eb9b740c04a5cbb8",
+//   "0xe2425450aa2168ddd4ef2d0fc9b36f5399d7b1395cef9ed4e32959b9c4cadd7f",
+//   "0xcf51023e5f9f51b99304c05e58797c86c5b6a8afd3bc29d432789ad9a1971d3d",
+//   "0x7ca7da75ccb04304d6afd82329c0aef5bcefe6d62e112087982e92327f2dcf32"
 // ]

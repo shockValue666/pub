@@ -25,8 +25,36 @@ module.exports = {
       url:process.env.REACT_APP_RINKEBY_RPC_URL,
       accounts:[process.env.REACT_APP_PRIVATE_KEY]
     },
+    stardust: {
+      url: "https://stardust.metis.io/?owner=588",
+      accounts: [process.env.REACT_APP_PRIVATE_KEY],
+      verify: {
+        etherscan: {
+          // just use api-key
+          apiKey: "api-key",
+          apiUrl: "https://stardust-explorer.metis.io",
+        },
+      },
+    },
+    andromeda: {
+      url: "https://andromeda.metis.io/?owner=1088",
+      accounts: [process.env.REACT_APP_PRIVATE_KEY],
+      verify: {
+        etherscan: {
+          // just use api-key
+          apiKey: "api-key",
+          apiUrl: "https://andromeda-explorer.metis.io",
+        },
+      },
+    },
   },
   etherscan:{
     apiKey:process.env.REACT_APP_ETHERSCAN_KEY
+  },
+  gasReporter:{
+    enabled:true,
+    currency:"USD"
   }
 };
+
+
